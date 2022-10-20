@@ -1,4 +1,4 @@
-import { getComplexity, simpleEstimator } from 'graphql-query-complexity';
+import { fieldExtensionsEstimator, getComplexity, simpleEstimator } from 'graphql-query-complexity';
 import { GraphQLEnumType, GraphQLInputField, GraphQLInputObjectType, GraphQLInputType, GraphQLNamedType, parse } from 'graphql';
 import { loadSchema } from '@graphql-tools/load';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
@@ -209,14 +209,14 @@ async function calculateComplexity(schemaPath: string, queriesPath: string, frag
             
             try {
                 const complexity = getComplexity({
-                    estimators: [simpleEstimator({ defaultComplexity: 1 })],
+                    estimators: [fieldExtensionsEstimator(), simpleEstimator({ defaultComplexity: 1 })],
                     schema,
                     query: parse(query),
                     variables: variables,
                 });
 
                 const complexityWithFragments = getComplexity({
-                    estimators: [simpleEstimator({ defaultComplexity: 1 })],
+                    estimators: [fieldExtensionsEstimator(), simpleEstimator({ defaultComplexity: 1 })],
                     schema,
                     query: parse(`${query}\n${fragments}`),
                     variables: variables,
